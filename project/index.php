@@ -7,6 +7,7 @@
 <body>
 <ul>
     <li><a href="view/registration.html" target="_self">registration</a></li>
+    <li><a href="view/login.html" target="_self">Login</a></li>
 </ul>
 
 </body>

@@ -13,7 +13,6 @@ class database
    private $username = "user";
    private $serverName = "localhost";
    private $con;
-   private $dsn;
    function __construct($userName, $password = "")
    {
        $this->username = $userName;
@@ -21,31 +20,30 @@ class database
    }
 
    function connection(){
+        $result = true;
         $dsn = "mysql:host=" . $this->serverName . ";dbname=" . $this->dbName;
        try {
            $this->con = new PDO($dsn, $this->username, $this->password);
            // set the PDO error mode to exception
            $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-           echo "Connected successfully";
+           //echo "Connected successfully";
        }catch(PDOException $e){
+           $result = false;
            echo "Connection failed: " . $e->getMessage();
+
        }
-
-       return $this->con;
-   }
-
-   function __destruct()
-   {
-        $this->con = null; //close database connection
+       return $result;
    }
 
 
-    function registration($connection, $info){
+
+
+    function registration($info){
         $sql = 'INSERT INTO users (email, password, name, phone, city , state) VALUES (?, ?, ?, ?, ?, ?)';
         $result = true;
         $password = $this->encryption($info["password"]);
         try{
-            $stmt = $connection->prepare($sql);
+            $stmt = $this->con->prepare($sql);
             $stmt->bindParam(1,  $info["email"]);
             $stmt->bindParam(2,  $password);
             $stmt->bindParam(3,  $info["name"]);
@@ -54,8 +52,8 @@ class database
             $stmt->bindParam(6,  $info["state"]);
             $stmt->execute();
             if ($info["role"] == "student"){
-                $studentInfo = ["id" => $this->getlastInsertID($connection), "grade" => 0];
-                $this->registerStudent($connection, $studentInfo);
+                $studentInfo = ["id" => $this->getlastInsertID(), "grade" => 0];
+                $this->registerStudent($studentInfo);
             }
 
         }catch(PDOException $e){
@@ -66,21 +64,43 @@ class database
    }
 
 
-    private function getlastInsertID($connection){
-        return $connection->lastInsertId();
-    }
+   function login($info){
 
-    private function registerStudent($connection, $info){
+       $sql = 'SELECT password FROM users WHERE email = ? LIMIT 1';
+       $result = false;
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->bindParam(1, $info["email"]);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            foreach($stmt->fetchAll() as $k => $v) {
+                if ($this->verify($info["password"], $v["password"])){
+                        $result = true;
+                }
+            }
+        }catch (PDOException $e){
+           echo $e->getMessage();
+       }
+       return $result;
+   }
+
+
+
+
+    private function registerStudent($info){
+       $result = false;
         $sql = 'INSERT INTO students (student_id, grade) VALUES (?,?)';
         try{
-            $stmt = $connection->prepare($sql);
+            $stmt =  $this->con->prepare($sql);
             $stmt->bindParam(1, $info["id"]);
             $stmt->bindParam(2, $info["grade"]);
             $stmt->execute();
+            $result = true;
             //echo '<script>console.log("student is good")</script>';
         }catch(PDOException $e){
             echo $e->getMessage();
         }
+        return $result;
     }
 
     private function encryption($word){
@@ -89,6 +109,16 @@ class database
 
     private function verify($word, $hash){
         return password_verify($word, $hash);
+    }
+
+    private function getlastInsertID(){
+        return  $this->con->lastInsertId();
+    }
+
+    function __destruct()
+    {
+        //echo "   class is close in destruct function";
+        $this->con = null; //close database connection
     }
 
 }

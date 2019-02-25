@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <form method="post" action="../controller/login.php">
+        <div class="imgcontainer">
+            <img src="../public/image/uml_logo.jpg" alt="Avatar" class="avatar">
+        </div>
+
+        <div class="container">
+            <label for="name"><b>Username</b></label>
+            <input type="email" placeholder="Enter User Email" name="email" required>
+            <br/>
+            <label for="pw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" required>
+            <br/>
+            <label for="role"><b>Role</b></label>
+            <select name="role" required>
+                <option value="">--Please select one--</option>
+                <option value="student">Student</option>
+                <option value="parent">Parent</option>
+            </select>
+            <hr>
+
+            <button type="submit">Login</button>
+
+        </div>
+
+
+    </form>
+</body>
+</html>

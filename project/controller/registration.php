@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
 
 
     $db = new database("root", "");
-    $connection = $db->connection();
-    if ($db->registration($connection, $info)){
+    $db->connection();
+    if ($db->registration($info)){
         echo "new record is added successfully";
     }else{
         echo "cannot add new record now";
