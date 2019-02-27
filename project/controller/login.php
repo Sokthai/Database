@@ -14,8 +14,8 @@ $password = $_POST["password"];
 $db->connection();//connect to database
 $info = ["email" => strtolower($_POST["email"]), "password" => $_POST["password"]];
 
-if ($db->login($info)){
-    echo "welcome to the club " . $_POST["email"];
+if (($name = $db->login($info)) != false){
+    header("location:../view/panel.php?name=" . $name);
 }else{
     echo "Sorry, your email or password is not correct";
 }

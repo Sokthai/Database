@@ -68,9 +68,9 @@ class database
    }
 
 
-   function login($info){
+   function login($info){ //return the name of user if login successfully or false otherwise
 
-       $sql = 'SELECT password FROM users WHERE email = ? LIMIT 1';
+       $sql = 'SELECT name, password FROM users WHERE email = ? LIMIT 1';
        $result = false;
         try{
             $stmt =  $this->con->prepare($sql);
@@ -79,7 +79,7 @@ class database
             $stmt->setFetchMode(PDO::FETCH_ASSOC);
             foreach($stmt->fetchAll() as $k => $v) {
                 if ($this->verify($info["password"], $v["password"])){
-                        $result = true;
+                        $result = $v["name"];
                 }
             }
         }catch (PDOException $e){
