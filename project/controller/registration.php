@@ -13,6 +13,9 @@ require("../model/database.php");
 
 
 if ($_SERVER['REQUEST_METHOD'] == "POST"){
+    $db = new database("root", "");
+    $db->connection();
+
     $email = $_POST["email"];
     $password = $_POST["password"];
     $pwRepeat = $_POST["pw-repeat"];
@@ -23,28 +26,32 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
     $role = $_POST["role"];
 
 
-    if (!$password == $pwRepeat){
-        $_SESSION["error"] = "you password doesn't match";
-        echo "are you here";
-        //header("location:../view/registration.html");
-    }
+    if ($db->notExistEmail($email)){
 
-    $info = [
-        "email" => $email, "password" => $password,
-        "name" => $name, "phone" => $phone,
-        "city" => $city, "state" => $state,
-        "role" => $role
-    ];
+        if ($password != $pwRepeat) {
+            $_SESSION["error"] = "you password doesn't match";
+            header("location:" . $_SERVER['HTTP_REFERER']);
+        }else {
+            $info = [
+                "email" => $email, "password" => $password,
+                "name" => $name, "phone" => $phone,
+                "city" => $city, "state" => $state,
+                "role" => $role
+            ];
 
 
-
-    $db = new database("root", "");
-    $db->connection();
-    if ($db->registration($info)){
-        echo "new record is added successfully";
+            if ($db->registration($info)) {
+                echo "new record is added successfully";
+                echo $_SERVER['HTTP_REFERER'];
+            } else {
+                echo "cannot add new record now";
+                echo $_SERVER['HTTP_REFERER'];
+            }
+        }
     }else{
-        echo "cannot add new record now";
+        echo "        ---->the email is already exist";
     }
+
 }else{
     echo "sorry , wrong page";
 }

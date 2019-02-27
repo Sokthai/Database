@@ -32,6 +32,7 @@ class database
            echo "Connection failed: " . $e->getMessage();
 
        }
+//       echo "connected successfully";
        return $result;
    }
 
@@ -54,6 +55,9 @@ class database
             if ($info["role"] == "student"){
                 $studentInfo = ["id" => $this->getlastInsertID(), "grade" => 0];
                 $this->registerStudent($studentInfo);
+            }else{
+                $parentInfo = ["id" => $this->getlastInsertID()];
+                $this->registerParent($parentInfo);
             }
 
         }catch(PDOException $e){
@@ -84,7 +88,19 @@ class database
        return $result;
    }
 
-
+    function notExistEmail($email){ //check if the email is not exist in the db
+       $sql = 'SELECT COUNT(*) FROM users WHERE email = ?';
+       $result = false;
+       try{
+           $stmt =  $this->con->prepare($sql);
+           $stmt->bindParam(1, $email);
+           $stmt->execute();
+           $result = ($stmt->fetchColumn() == 0)? true : false;
+       }catch(PDOException $e){
+           echo $e->getMessage();
+       }
+       return $result;
+    }
 
 
     private function registerStudent($info){
@@ -103,6 +119,28 @@ class database
         return $result;
     }
 
+
+    private function registerParent($info){
+        $result = false;
+        $sql = 'INSERT INTO parents (parent_id) VALUES (?)';
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->bindParam(1, $info["id"]);
+            $stmt->execute();
+            $result = true;
+            //echo '<script>console.log("student is good")</script>';
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
+    }
+
+
+
+
+
+
+
     private function encryption($word){
         return password_hash($word, PASSWORD_DEFAULT);
     }
@@ -117,7 +155,7 @@ class database
 
     function __destruct()
     {
-        //echo "   class is close in destruct function";
+//        echo "   destruct connection is closed";
         $this->con = null; //close database connection
     }
 
