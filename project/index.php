@@ -6,7 +6,9 @@
 </head>
 <body>
 <ul>
-    <li><a href="view/registration.html" target="_self">registration</a></li>
+    <li><a href="view/ParentRegistration.html" target="_self">Parent Registration</a></li>
+    <li><a href="view/studentRegistration.html" target="_self">Student Registration</a></li>
+
     <li><a href="view/login.html" target="_self">Login</a></li>
 </ul>
 

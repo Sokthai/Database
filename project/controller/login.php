@@ -14,8 +14,9 @@ $password = $_POST["password"];
 $db->connection();//connect to database
 $info = ["email" => strtolower($_POST["email"]), "password" => $_POST["password"]];
 
-if (($name = $db->login($info)) != false){
-    header("location:../view/panel.php?name=" . $name);
+if (($user = $db->login($info)) != false){
+
+    header("location:../view/panel.php?info=" . base64_encode(serialize($user)));
 }else{
     echo "Sorry, your email or password is not correct";
 }

@@ -25,6 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
     $state = $_POST["state"];
     $role = $_POST["role"];
 
+    //echo "this is moderator "  . $moderator;
+
 
     if ($db->notExistEmail($email)){
 
@@ -32,12 +34,26 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
             $_SESSION["error"] = "you password doesn't match";
             header("location:" . $_SERVER['HTTP_REFERER']);
         }else {
-            $info = [
-                "email" => $email, "password" => $password,
-                "name" => $name, "phone" => $phone,
-                "city" => $city, "state" => $state,
-                "role" => $role
-            ];
+            if ($role == "parent"){
+                $moderator = false;
+                if (isset($_POST["moderator"])){
+                    $moderator = $_POST["moderator"];
+                }
+                $info = [
+                    "email" => $email, "password" => $password,
+                    "name" => $name, "phone" => $phone,
+                    "city" => $city, "state" => $state,
+                    "role" => $role, "moderator" => $moderator
+                ];
+            }else{
+                $status = $_POST["status"];
+                $info = [
+                    "email" => $email, "password" => $password,
+                    "name" => $name, "phone" => $phone,
+                    "city" => $city, "state" => $state,
+                    "role" => $role, "status" => $status
+                ];
+            }
 
 
             if ($db->registration($info)) {
