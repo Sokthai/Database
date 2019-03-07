@@ -7,7 +7,7 @@
 <body>
     <form method="post" action="">
         <table border="2px solid ">
-            <?php echo print_r(unserialize(base64_decode($_GET["info"])));?>
+            <?php echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
             <tr><td colspan="2"><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["role"]);?></td> </tr>
             <tr>
                 <td>Name:</td>
@@ -32,16 +32,6 @@
             <tr>
                 <td>Child</td>
                 <td>Allen</td>
-            </tr>
-            <tr>
-                <td>Add Child:</td>
-                <td>
-                    <select>
-                        <?php
-                            echo '<option value="test">' . 'testOption' . '</option>';
-                        ?>
-                    </select>
-                </td>
             </tr>
         </table>
         <input type="submit" value="Update"/>
