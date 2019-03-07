@@ -142,6 +142,33 @@ class database
        return !$this->exist($sql, $email);
     }
 
+    function updateStudent($info){
+        $sql = 'UPDATE USERS SET name = ? , email = ?, phone = ?, city = ?, state = ? WHERE id = ?';
+        $result = false;
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->bindParam(1, $info["name"]);
+            $stmt->bindParam(2, $info["email"]);
+            $stmt->bindParam(3, $info["phone"]);
+            $stmt->bindParam(4, $info["city"]);
+            $stmt->bindParam(5, $info["state"]);
+            $stmt->bindParam(6, $info["id"]);
+            $result = $stmt->execute();
+            if ($info["mentor"] != null) {
+                $this->updateMentor($info["mentor"], $info["id"]);
+            }
+
+            if ($info["mentee"] != null) {
+                $this->updateMentor($info["mentee"], $info["id"]);
+            }
+
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
+    }
+
+
     private function exist($sql, $info){
         $result = false;
         try{
@@ -178,14 +205,23 @@ class database
         return $result;
     }
 
+    private function updateMentor($value, $id){
+        $sql = 'UPDATE mentees SET mentee_id = ' . $value . ' WHERE id = ?';
+        $this->menteeMentor($sql, $id);
+    }
+
+    private function updateMentee($value, $id){
+        $sql = 'UPDATE mentors SET mentor_id = ' . $value . ' WHERE id = ?';
+        $this->menteeMentor($sql, $id);
+    }
 
     private function mentee($id){
-        $sql = "INSERT INTO mentees (mentee_id) VALUES (?)";
+        $sql = 'INSERT INTO mentees (mentee_id) VALUES (?)';
         $this->menteeMentor($sql, $id);
     }
 
     private function mentor($id){
-        $sql = "INSERT INTO mentors (mentor_id) VALUES (?)";
+        $sql = 'INSERT INTO mentors (mentor_id) VALUES (?)';
         $this->menteeMentor($sql, $id);
     }
 
@@ -313,6 +349,7 @@ class database
     private function isStudentLogin($email){
         return !$this->isParentLogin($email); //if not parent, then must be student
     }
+
 
 
     function __destruct()

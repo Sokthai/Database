@@ -5,7 +5,7 @@
     <title>Profile</title>
 </head>
 <body>
-<form method="post" action="">
+<form method="post" action="../controller/update.php">
     <table border="2px solid ">
 
         <?php echo "<pre>"; echo print_r(unserialize(base64_decode($_GET["info"]))); echo "</pre>";?>
@@ -40,20 +40,33 @@
                 <input type="text" name="state" id="state" value="<?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["state"]);?>">
             </td>
         </tr>
+        <input type="hidden" name="state" id="state" value="<?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["id"]);?>">
 
-        <label for="role"><b>Role</b></label>
-        <select name="status" required>
-            <?php
+
+        <?php
                 $info = unserialize(base64_decode($_GET["info"]));
-                if ($info["mentor"] == 1 && $info["mentee"] == 1){
-                    echo '<option value="0">Mentee</option>';
-                    echo '<option value="1">Mentor</option>';
-                    echo '<option value="2" selected>Both</option> ';
-                }
+                if (isset($_GET["student"])){ //if student themselves want to edit their own profile
+                    echo '<label for="role"><b>Role</b></label>';
+                    echo '<select name="status" required>';
 
+                    if ($info["mentor"] == 1 && $info["mentee"] == 1){
+                        echo '<option value="0">Mentee</option>';
+                        echo '<option value="1">Mentor</option>';
+                        echo '<option value="2" selected>Both</option> ';
+                    }elseif ($info["mentor"] == 1){
+                        echo '<option value="0">Mentee</option>';
+                        echo '<option value="1" selected>Mentor</option>';
+                        echo '<option value="2">Both</option> ';
+                    }else{
+                        echo '<option value="0" selected>Mentee</option>';
+                        echo '<option value="1">Mentor</option>';
+                        echo '<option value="2" >Both</option> ';
+                    }
+                    echo '</select>';
+                }
             ?>
 
-        </select>
+
     </table>
     <input type="submit" value="Update"/>
 </form>

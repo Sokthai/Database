@@ -16,7 +16,11 @@ $user = $db->getAllUserInfo($_GET["id"]);
 if ($user["role"] == "parent"){
     header("location:../view/editParent.php?info=" . base64_encode(serialize($user)));
 }else{
-    header("location:../view/editStudent.php?info=" . base64_encode(serialize($user)));
+    if (isset($_GET["student"])){ //if student edit there own profile
+        header("location:../view/editStudent.php?student=1&&info=" . base64_encode(serialize($user)));
+    }else{
+        header("location:../view/editStudent.php?info=" . base64_encode(serialize($user)));
+    }
 }
 //echo "<pre>";
 //print_r($db->getAllUserInfo($id));
