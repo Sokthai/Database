@@ -13,7 +13,13 @@ $db = new database("root", "");
 
 $db->connection();
 $mentee = $mentor = null;
+$user = "parent";
+
 if (isset($_POST["status"])){ //if student edit their own profile
+    $user = "student";
+}
+
+if ($user == "student"){
     switch ($_POST["status"]){
         case 2:
             $mentee = $mentor = 1; break;
@@ -22,10 +28,7 @@ if (isset($_POST["status"])){ //if student edit their own profile
         default:
             $mentee = 1;
     };
-}
-
-
-$info = [
+    $info = [
         "name" => $_POST["name"],
         "email" => $_POST["email"],
         "phone" => $_POST["phone"],
@@ -34,4 +37,39 @@ $info = [
         "id" => $_POST["id"],
         "mentee" => $mentee,
         "mentor" => $mentor
-];
+    ];
+}else{
+    $info = [
+        "name" => $_POST["name"],
+        "email" => $_POST["email"],
+        "phone" => $_POST["phone"],
+        "city" => $_POST["city"],
+        "state" => $_POST["state"],
+        "id" => $_POST["id"],
+        "moderator" => isset($_POST["moderator"])? $_POST["moderator"] : null
+    ];
+}
+
+
+
+
+if ($user == "student"){
+    if (!$db->updateStudent($info)){
+        echo "sorry, something when wrong in the database";
+    }else{
+        echo "updated student";
+        echo "<pre>";
+        print_r($info);
+        echo "</pre>";
+    }
+}else{
+    if (!$db->updateParent($info)){
+        echo "sorry, something when wrong in the database";
+    }else{
+        echo "updated parent";
+        echo "<pre>";
+        print_r($info);
+        echo "</pre>";
+    }
+}
+

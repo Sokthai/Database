@@ -5,7 +5,7 @@
     <title>Profile</title>
 </head>
 <body>
-    <form method="post" action="">
+
         <table border="2px solid ">
             <?php echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
             <tr><td colspan="2"><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["role"]);?></td> </tr>
@@ -30,11 +30,27 @@
                 <td><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["state"]);?> </td>
             </tr>
             <tr>
-                <td>Child</td>
-                <td>Allen</td>
+                <td>Parent</td>
+                <td><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["parent"][0]);?></td>
+            </tr>
+            <tr>
+                <td>Role</td>
+                <td>
+                    <?php
+                        $role = unserialize(base64_decode($_GET["info"]));
+                        if ($role["mentee"] && $role["mentor"]){
+                            echo "Mentee, Mentor";
+                        }elseif ($role["mentee"]){
+                            echo "Mentee";
+                        }elseif ($role["mentor"]){
+                            echo "Mentor";
+                        }
+
+                    ?>
+                </td>
             </tr>
         </table>
-        <input type="submit" value="Update"/>
-</form>
+        <a href="../controller/edit.php?id=<?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["id"]);?>">Edit</a>
+
 </body>
 </html>

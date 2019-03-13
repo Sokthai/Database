@@ -40,7 +40,7 @@
                 <input type="text" name="state" id="state" value="<?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["state"]);?>">
             </td>
         </tr>
-        <input type="hidden" name="state" id="state" value="<?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["id"]);?>">
+        <input type="hidden" name="id" value="<?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["id"]);?>">
 
 
         <?php

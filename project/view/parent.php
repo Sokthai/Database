@@ -29,6 +29,18 @@
             <td><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["state"]);?> </td>
         </tr>
         <tr>
+            <td>Moderator</td>
+            <td>
+                <?php
+                if (unserialize(base64_decode($_GET["info"]))["moderator"] != ""){
+                    echo '<input name="moderator" type="checkbox" value="1" checked readonly/>';
+                }else{
+                    echo '<input name="moderator" type="checkbox" value="1" readonly/>';
+                }
+                ?>
+            </td>
+        </tr>
+        <tr>
             <td>Child</td>
             <td>
                 <?php
@@ -44,7 +56,7 @@
             </td>
         </tr>
     </table>
-    <a href="../controller/edit.php?id=" <?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["id"]);?>>Edit</a>
+    <a href="../controller/edit.php?id=<?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["id"]);?>">Edit</a>
 
 </body>
 </html>

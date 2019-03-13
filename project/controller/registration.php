@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
             $_SESSION["error"] = "you password doesn't match";
             header("location:" . $_SERVER['HTTP_REFERER']);
         }else {
-            if ($role == "parent"){
+            if ($role == "parent"){ //IF PARENT REGISTER
                 $moderator = false;
                 if (isset($_POST["moderator"])){
                     $moderator = $_POST["moderator"];
@@ -45,24 +45,40 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                     "city" => $city, "state" => $state,
                     "role" => $role, "moderator" => $moderator
                 ];
-            }else{
-                $status = $_POST["status"];
-                $info = [
-                    "email" => $email, "password" => $password,
-                    "name" => $name, "phone" => $phone,
-                    "city" => $city, "state" => $state,
-                    "role" => $role, "status" => $status
-                ];
+                if ($db->registration($info)) {
+                    echo "new parent record is added successfully";
+                    echo $_SERVER['HTTP_REFERER'];
+                } else {
+                    echo "cannot add new record now";
+                    echo $_SERVER['HTTP_REFERER'];
+                }
+
+            }else{ //IF STUDENT REGISTER
+                if ($db->verfifyParent($_POST["parentEmail"])){
+                    $status = $_POST["status"];
+                    $info = [
+                        "email" => $email, "password" => $password,
+                        "name" => $name, "phone" => $phone,
+                        "city" => $city, "state" => $state,
+                        "role" => $role, "status" => $status,
+                        "parentEmail" => $_POST["parentEmail"]
+                    ];
+                    if ($db->registration($info)) {
+                        echo "new student record is added successfully";
+                        echo $_SERVER['HTTP_REFERER'];
+                    } else {
+                        echo "cannot add new record now";
+                        echo $_SERVER['HTTP_REFERER'];
+                    }
+                }else{
+                    echo "sorry, Parent email is not valid";
+                }
+
+
             }
 
 
-            if ($db->registration($info)) {
-                echo "new record is added successfully";
-                echo $_SERVER['HTTP_REFERER'];
-            } else {
-                echo "cannot add new record now";
-                echo $_SERVER['HTTP_REFERER'];
-            }
+
         }
     }else{
         echo "        ---->the email is already exist";
