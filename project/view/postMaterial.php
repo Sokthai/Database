@@ -28,12 +28,10 @@
         <textarea placeholder="Enter Note" name="note" required></textarea>
         <br/>
         <input type="hidden" name="moderatorId" value="<?php echo $_GET["moid"];?>">
-        <button type="submit" class="registerbtn">Register</button>
+        <button type="submit" class="registerbtn">Post</button>
     </div>
 
-    <div class="container signin">
-        <p>Already have an account? <a href="login.html">Sign in</a>.</p>
-    </div>
+
 </form>
 </body>
 </html>

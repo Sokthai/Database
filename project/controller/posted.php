@@ -16,5 +16,5 @@ $postedMaterial = $db->getAllpostedMaterial($_GET["moid"]);
 if (count($postedMaterial) > 0){
     header("location:../view/postedMaterial.php?info=" . base64_encode(serialize($postedMaterial)));
 }else{
-    echo "sorry, cannot get posted material";
+    echo "You do not have any posted material";
 }

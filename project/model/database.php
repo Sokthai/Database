@@ -222,6 +222,69 @@ class database
     }
 
 
+    function getAllSection(){
+        $sql = 'SELECT title, description, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sec_id FROM sections, time_slot, courses WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id ORDER BY sections.sec_name ASC';
+
+        $result = [];
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            foreach($stmt->fetchAll() as $k => $v) {
+                array_push($result,
+                    [
+                        "secId" => $v["sec_id"],
+                        "cId" => $v["cId"],
+                        "startDate" => $v["start_date"],
+                        "endDate" => $v["end_date"],
+                        "capacity" => $v["capacity"],
+                        "secName" => $v["sec_name"],
+                        "dayOfTheWeek" => $v["day_of_the_week"],
+                        "startTime" => $v["start_time"],
+                        "endTime" => $v["end_time"],
+                        "title" => $v["title"],
+                        "description" => $v["description"]
+                    ]
+                );
+            }
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
+
+    }
+
+    function setSection($moid, $secId){
+        //insert into table (fielda, fieldb, ... ) values (?,?...), (?,?...)....
+        $insertValue = [];
+        $questionMark = "";
+        foreach($secId as $v) {
+            $questionMark .= ",(?, ?)";
+            $insertValue = array_merge($insertValue, [$v, $moid]);
+        }
+        $sql = 'INSERT INTO moderate (sec_id, moderator_id) VALUES' . substr($questionMark, 1);
+        echo $sql;
+        echo "<pre>";
+        print_r($insertValue);
+        echo "</pre>";
+        $result = [];
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->execute($insertValue); //insert multiple row with one statement
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
+
+    }
+
+
+
+
+
+
+
+
     private function course(){
        // $sql = "INSERT INTO `courses` (`c_id`, `title`, `description`, `mentor_grade_req`, `mentee_grade_req`) VALUES ('1', 'database 2', 'mysql and project', '10', '5');"
         //INSERT INTO `time_slot` (`time_slot_id`, `day_of_the_week`, `start_time`, `end_time`) VALUES ('1', 'm, w, f', '03:00:00', '04:00:00');
