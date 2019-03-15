@@ -264,6 +264,93 @@ class database
         return $this->getSection($sql, $moid);
     }
 
+    function assignMaterial($info){
+        $sql = 'INSERT INTO `assign` (`sec_id`, `ses_id`, `moderator_id`, `material_id`) VALUES (?, ?, ?, ?)';
+        $result = false;
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->bindParam(1, $info["secId"]);
+            $stmt->bindParam(2, $info["sesId"]);
+            $stmt->bindParam(3, $info["moderatorId"]);
+            $stmt->bindParam(4, $info["materialId"]);
+            if ($result = $stmt->execute()){
+                $result = $this->post($info["moderatorId"], $this->getlastInsertID());
+            }
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
+    }
+
+
+    function getAllSession(){
+        $sql = 'SELECT * FROM sessions';
+        return $this->getSession($sql);
+    }
+
+    function getUserSession($moid){
+        $sql = 'SELECT * FROM sessions WHERE moderator_id = ?';
+        return $this->getSession($sql, $moid);
+    }
+
+
+
+
+
+    private function course(){
+       // $sql = "INSERT INTO `courses` (`c_id`, `title`, `description`, `mentor_grade_req`, `mentee_grade_req`) VALUES ('1', 'database 2', 'mysql and project', '10', '5');"
+        //INSERT INTO `time_slot` (`time_slot_id`, `day_of_the_week`, `start_time`, `end_time`) VALUES ('1', 'm, w, f', '03:00:00', '04:00:00');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//private function
+
+    private function getSession($sql, $moid = null){
+        $result = [];
+        try{
+            $stmt =  $this->con->prepare($sql);
+            if ($moid != null){
+                $stmt->bindParam(1, $moid);
+            }
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            foreach($stmt->fetchAll() as $k => $v) {
+                array_push($result,
+                    [
+                        "secId" => $v["sec_id"],
+                        "sesId" => $v["ses_id"],
+                        "sesName" => $v["ses_name"],
+                        "date" => $v["date"],
+                        "announcement" => $v["announcement"]
+                    ]
+                );
+            }
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
+    }
+
+
+
+
+
     private function getSection($sql, $moid = null){
         $result = [];
         try{
@@ -295,34 +382,6 @@ class database
         }
         return $result;
     }
-
-
-
-
-
-    private function course(){
-       // $sql = "INSERT INTO `courses` (`c_id`, `title`, `description`, `mentor_grade_req`, `mentee_grade_req`) VALUES ('1', 'database 2', 'mysql and project', '10', '5');"
-        //INSERT INTO `time_slot` (`time_slot_id`, `day_of_the_week`, `start_time`, `end_time`) VALUES ('1', 'm, w, f', '03:00:00', '04:00:00');
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//private function
 
     private function setUpUserInfo($email, $v){
         if ($this->isParentLogin($email)){ //if parent login
