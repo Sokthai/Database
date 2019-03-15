@@ -6,11 +6,10 @@
 </head>
 <body>
 
-<form method="post" action="../controller/moderate.php">
     <table border="2px solid ">
         <?php echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
         <tr>
-            <th colspan="10">Moderating</th>
+            <th colspan="10">Your Schedule</th>
         </tr>
         <tr>
             <td>Course</td>
@@ -22,12 +21,6 @@
             <td>Day of Week</td>
             <td>Capacity</td>
             <td>Description</td>
-            <?php
-                if (isset($_GET["moid"])){
-                    echo '<td>Select</td>';
-                }
-            ?>
-
 
         </tr>
         <?php
@@ -42,29 +35,11 @@
             echo "<td>" . $value["dayOfTheWeek"] . "</td>";
             echo "<td>" . $value["capacity"] . "</td>";
             echo "<td>" . $value["description"] . "</td>";
-            //if (isset($_GET["moid"])) {
-                echo "<td><input type='checkbox' name='secId[]' value=' " . $value["secId"] . "'</td>";
-            //}
             echo "</tr>";
         }
-        if (count(unserialize(base64_decode($_GET["info"]))) <= 0){
-            echo "You are moderating all section. No more section for you to moderate";
-        }
-
-
-            //if (isset($_GET["moid"])) {
-                echo "<input type='hidden' name='moderator' value='" . $_GET["moid"] . "'>";
-
-            //}
-
         ?>
 
     </table>
-    <?php
-        //if (isset($_GET["moid"])){
-            echo '<input type="submit" value="Moderate">';
-        //}
-    ?>
-</form>
+
 </body>
 </html>

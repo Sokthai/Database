@@ -223,35 +223,8 @@ class database
 
 
     function getAllSection(){
-        $sql = 'SELECT title, description, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sec_id FROM sections, time_slot, courses WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id ORDER BY sections.sec_name ASC';
-
-        $result = [];
-        try{
-            $stmt =  $this->con->prepare($sql);
-            $stmt->execute();
-            $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            foreach($stmt->fetchAll() as $k => $v) {
-                array_push($result,
-                    [
-                        "secId" => $v["sec_id"],
-                        "cId" => $v["cId"],
-                        "startDate" => $v["start_date"],
-                        "endDate" => $v["end_date"],
-                        "capacity" => $v["capacity"],
-                        "secName" => $v["sec_name"],
-                        "dayOfTheWeek" => $v["day_of_the_week"],
-                        "startTime" => $v["start_time"],
-                        "endTime" => $v["end_time"],
-                        "title" => $v["title"],
-                        "description" => $v["description"]
-                    ]
-                );
-            }
-        }catch(PDOException $e){
-            echo $e->getMessage();
-        }
-        return $result;
-
+        $sql = 'SELECT title, description, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id ORDER BY sections.sec_name ASC';
+        return $this->getSection($sql);
     }
 
     function setSection($moid, $secId){
@@ -269,17 +242,59 @@ class database
         echo "</pre>";
         $result = [];
         try{
+            $this->con->beginTransaction(); // also helps speed up your inserts.
             $stmt =  $this->con->prepare($sql);
             $stmt->execute($insertValue); //insert multiple row with one statement
         }catch(PDOException $e){
             echo $e->getMessage();
         }
+        $this->con->commit();
+
         return $result;
 
     }
 
+    function getUserSection($moid){
+        $sql = 'SELECT title, description, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, moderate WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id = moderate.sec_id and moderate.moderator_id = ? ORDER BY sections.sec_name ASC';
+        return $this->getSection($sql, $moid);
+    }
 
+    function getAddableSection($moid){
+        $sql = 'SELECT DISTINCT title, description, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, moderate WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id  and sections.sec_id NOT IN (SELECT moderate.sec_id FROM moderate WHERE moderate.moderator_id = ?) ORDER BY sections.sec_name ASC';
+        return $this->getSection($sql, $moid);
+    }
 
+    private function getSection($sql, $moid = null){
+        $result = [];
+        try{
+            $stmt =  $this->con->prepare($sql);
+            if ($moid != null){
+                $stmt->bindParam(1, $moid);
+            }
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            foreach($stmt->fetchAll() as $k => $v) {
+                array_push($result,
+                    [
+                        "secId" => $v["sec_id"],
+                        "cId" => $v["c_id"],
+                        "startDate" => $v["start_date"],
+                        "endDate" => $v["end_date"],
+                        "capacity" => $v["capacity"],
+                        "secName" => $v["sec_name"],
+                        "dayOfTheWeek" => $v["day_of_the_week"],
+                        "startTime" => $v["start_time"],
+                        "endTime" => $v["end_time"],
+                        "title" => $v["title"],
+                        "description" => $v["description"]
+                    ]
+                );
+            }
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
+    }
 
 
 
