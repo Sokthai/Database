@@ -193,7 +193,7 @@ class database
 
 
 
-    function getAllpostedMaterial($moderatorId){
+    function getUserPostedMaterial($moderatorId){
         $sql = 'SELECT * FROM material WHERE material_id IN (SELECT material_id FROM post WHERE moderator_id = ?)';
         $result = [];
         try{

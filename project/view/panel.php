@@ -20,7 +20,7 @@
                     echo '<li><a href="postMaterial.php?moid=' . unserialize(base64_decode($_GET["info"]))["id"] . '" target="_self">Post Material</a></li>';
                     echo '<li><a href="../controller/posted.php?moid=' . unserialize(base64_decode($_GET["info"]))["id"] . '" target="_self">View Posted Material</a></li>';
                     echo '<li><a href="../controller/moderate.php?moid=' . unserialize(base64_decode($_GET["info"]))["id"] . '" target="_self">Moderating</a></li>';
-                    echo '<li><a href="../controller/moderate.php?moid=' . unserialize(base64_decode($_GET["info"]))["id"] . '" target="_self">Assign Session</a></li>';
+                    echo '<li><a href="../controller/assignment.php?moid=' . unserialize(base64_decode($_GET["info"]))["id"] . '" target="_self">Assign material to session</a></li>';
 
                 }
 

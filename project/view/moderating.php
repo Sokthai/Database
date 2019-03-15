@@ -48,7 +48,7 @@
             echo "</tr>";
         }
         if (count(unserialize(base64_decode($_GET["info"]))) <= 0){
-            echo "You are moderating all section. No more section for you to moderate";
+            echo "<b style='color: red'>YOU ARE MODERATING ALL SECTION. NO MORE SECTION FOR YOU TO MODERATE</b>";
         }
 
 

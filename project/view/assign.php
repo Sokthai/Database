@@ -9,7 +9,7 @@
 <table border="2px solid ">
     <?php echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
     <tr>
-        <th colspan="7">Posted Material</th>
+        <th colspan="7">Assign Material to Session</th>
     </tr>
     <tr>
         <td>Material ID</td>
@@ -19,6 +19,7 @@
         <td>URL</td>
         <td>Assign Date</td>
         <td>Note</td>
+        <td>Assignment</td>
     </tr>
     <?php
     foreach(unserialize(base64_decode($_GET["info"])) as $value){
@@ -30,7 +31,7 @@
         echo "<td>" . $value["url"] . "</td>";
         echo "<td>" . $value["assignDate"] . "</td>";
         echo "<td>" . $value["notes"] . "</td>";
-        echo "<td><a href='../controller/assignment.php?moid=" . $_GET["moid"] . "&&info=" . $value["materialId"] . "</a></td>"  ;
+        echo "<td><a href='../controller/session.php?moid=" . $_GET["moid"] . "&&maid=" . $value["materialId"] . ">Assign</a></td>"  ;
 //        header("location:../view/moderating.php?moid=" .$_GET["moid"] . "&&info=" . base64_encode(serialize($db->getAddableSection($_GET["moid"]))));
 
         echo "</tr>";

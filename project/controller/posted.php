@@ -12,7 +12,7 @@ $db->connection();
 
 
 
-$postedMaterial = $db->getAllpostedMaterial($_GET["moid"]);
+$postedMaterial = $db->getUserPostedMaterial($_GET["moid"]);
 if (count($postedMaterial) > 0){
     header("location:../view/postedMaterial.php?info=" . base64_encode(serialize($postedMaterial)));
 }else{
