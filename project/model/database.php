@@ -223,9 +223,10 @@ class database
 
 
     function getAllSection(){
-        $sql = 'SELECT title, description, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id ORDER BY sections.sec_name ASC';
+        $sql = 'SELECT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id ORDER BY sections.sec_name ASC';
         return $this->getSection($sql);
     }
+
 
     function setSection($moid, $secId){
         //insert into table (fielda, fieldb, ... ) values (?,?...), (?,?...)....
@@ -236,10 +237,10 @@ class database
             $insertValue = array_merge($insertValue, [$v, $moid]);
         }
         $sql = 'INSERT INTO moderate (sec_id, moderator_id) VALUES' . substr($questionMark, 1);
-        echo $sql;
-        echo "<pre>";
-        print_r($insertValue);
-        echo "</pre>";
+//        echo $sql;
+//        echo "<pre>";
+//        print_r($insertValue);
+//        echo "</pre>";
         $result = [];
         try{
             $this->con->beginTransaction(); // also helps speed up your inserts.
@@ -254,13 +255,64 @@ class database
 
     }
 
+    function sectionEnrollment($table, $user, $value){
+        //insert into table (fielda, fieldb, ... ) values (?,?...), (?,?...)....
+        $insertValue = [];
+        $questionMark = "";
+        foreach($value as $v) {
+            $questionMark .= ",(?, ?)";
+            $insertValue = array_merge($insertValue, [$v, $user]);
+        }
+        if ($table == "teach"){
+            $sql = 'INSERT INTO teach (sec_id, mentor_id) VALUES' . substr($questionMark, 1);
+        }elseif ($table == "enroll"){
+            $sql = 'INSERT INTO enroll (sec_id, mentee_id) VALUES' . substr($questionMark, 1);
+        }
+        echo $sql;
+        echo "<pre>";
+        print_r($insertValue);
+        echo "</pre>";
+        try{
+            $this->con->beginTransaction(); // also helps speed up your inserts.
+            $stmt =  $this->con->prepare($sql);
+            $stmt->execute($insertValue); //insert multiple row with one statement
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        $result = $this->con->commit();
+
+        return $result;
+    }
+
+
+
     function getUserSection($moid){
-        $sql = 'SELECT title, description, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, moderate WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id = moderate.sec_id and moderate.moderator_id = ? ORDER BY sections.sec_name ASC';
+        $sql = 'SELECT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, moderate WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id = moderate.sec_id and moderate.moderator_id = ? ORDER BY sections.sec_name ASC';
         return $this->getSection($sql, $moid);
     }
 
+    function getMenteeSection($mentee){
+        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, enroll WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id in (select sec_id from enroll where enroll.mentee_id = ?) ORDER by sections.sec_name ASC';
+        return $this->getSection($sql, $mentee);
+    }
+
+    function getAddableMenteeSection($mentee){
+        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, enroll WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id not in (select sec_id from enroll where enroll.mentee_id = ?) ORDER by sections.sec_name ASC';
+        return $this->getSection($sql, $mentee);
+    }
+
+    function getMentorSection($mentor){
+        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, teach WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id in (select sec_id from teach where teach.mentor_id = ?) ORDER by sections.sec_name ASC';
+        return $this->getSection($sql, $mentor);
+    }
+
+    function getAddableMentorSection($mentor){
+        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, teach WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id not in (select sec_id from teach where teach.mentor_id = ?) ORDER by sections.sec_name ASC';
+        return $this->getSection($sql, $mentor);
+    }
+
     function getAddableSection($moid){
-        $sql = 'SELECT DISTINCT title, description, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, moderate WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id  and sections.sec_id NOT IN (SELECT moderate.sec_id FROM moderate WHERE moderate.moderator_id = ?) ORDER BY sections.sec_name ASC';
+        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, moderate WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id  and sections.sec_id NOT IN (SELECT moderate.sec_id FROM moderate WHERE moderate.moderator_id = ?) ORDER BY sections.sec_name ASC';
         return $this->getSection($sql, $moid);
     }
 
@@ -273,9 +325,7 @@ class database
             $stmt->bindParam(2, $info["sesId"]);
             $stmt->bindParam(3, $info["moderatorId"]);
             $stmt->bindParam(4, $info["materialId"]);
-            if ($result = $stmt->execute()){
-                $result = $this->post($info["moderatorId"], $this->getlastInsertID());
-            }
+            $result = $stmt->execute();
         }catch(PDOException $e){
             echo $e->getMessage();
         }
@@ -293,21 +343,72 @@ class database
         return $this->getSession($sql, $moid);
     }
 
+    /**
+     * @param $info
+     * An array of materialId and moderatorId
+     * return the sessions that are not been assign to the same assigned material
+     */
+
+    function getAssignableSession($info){
+        $sql = 'SELECT * FROM sessions WHERE ses_id NOT IN (SELECT ses_id FROM assign WHERE moderator_id = ? AND material_id = ?)';
+        return $this->getSession($sql, $info["moid"], $info["maid"]);
+    }
 
 
+    function getAssignedSession($moid){
 
-
-    private function course(){
-       // $sql = "INSERT INTO `courses` (`c_id`, `title`, `description`, `mentor_grade_req`, `mentee_grade_req`) VALUES ('1', 'database 2', 'mysql and project', '10', '5');"
-        //INSERT INTO `time_slot` (`time_slot_id`, `day_of_the_week`, `start_time`, `end_time`) VALUES ('1', 'm, w, f', '03:00:00', '04:00:00');
+        $sql = 'SELECT DISTINCT material_id FROM assign WHERE moderator_id = ? ORDER BY material_id ASC';
+        $result = [];
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->bindParam(1, $moid);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            foreach($stmt->fetchAll() as $k => $v) {
+               array_push($result, $this->getAssignSessionOnly($v["material_id"]));
+            }
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
     }
 
 
 
 
+    private function getAssignSessionOnly($maid){
+       // $sql = "INSERT INTO `courses` (`c_id`, `title`, `description`, `mentor_grade_req`, `mentee_grade_req`) VALUES ('1', 'database 2', 'mysql and project', '10', '5');"
+        //INSERT INTO `time_slot` (`time_slot_id`, `day_of_the_week`, `start_time`, `end_time`) VALUES ('1', 'm, w, f', '03:00:00', '04:00:00');
 
-
-
+        $sql = 'select material_id, title, author, type, url, assigned_date, notes, ses_name, date, announcement from sessions, material where material_id =  ? and ses_id in (select ses_id from assign where material_id = ?);';
+        $result = [];
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->bindParam(1, $maid);
+            $stmt->bindParam(2, $maid);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            foreach($stmt->fetchAll() as $k => $v) {
+                array_push($result,
+                    [
+                        "maid" => $v["material_id"],
+                        "secId" => $v["title"],
+                        "sesId" => $v["author"],
+                        "type" => $v["type"],
+                        "url" => $v["url"],
+                        "assignedDate" => $v["assigned_date"],
+                        "notes" => $v["notes"],
+                        "sesName" => $v["ses_name"],
+                        "date" => $v["date"],
+                        "announcement" => $v["announcement"]
+                    ]
+                );
+            }
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
+    }
 
 
 
@@ -321,11 +422,15 @@ class database
 
 //private function
 
-    private function getSession($sql, $moid = null){
+    private function getSession($sql, $moid = null, $maid = null){
         $result = [];
         try{
             $stmt =  $this->con->prepare($sql);
-            if ($moid != null){
+
+            if ($moid != null && $maid != null){
+                $stmt->bindParam(1, $moid);
+                $stmt->bindParam(2, $maid);
+            }elseif ($moid != null){
                 $stmt->bindParam(1, $moid);
             }
             $stmt->execute();
@@ -373,7 +478,9 @@ class database
                         "startTime" => $v["start_time"],
                         "endTime" => $v["end_time"],
                         "title" => $v["title"],
-                        "description" => $v["description"]
+                        "description" => $v["description"],
+                        "mentorGradeReq" => $v["mentor_grade_req"],
+                        "menteeGradeReq" => $v["mentee_grade_req"]
                     ]
                 );
             }
@@ -547,12 +654,12 @@ class database
         return $result;
     }
 
-    private function isMentee($id){
+    function isMentee($id){
         $sql = "SELECT * FROM mentees WHERE mentee_id = ?";
         return $this->exist($sql, $id);
     }
 
-    private function isMentor($id){
+    function isMentor($id){
         $sql = "SELECT * FROM mentors WHERE mentor_id = ?";
         return $this->exist($sql, $id);
     }
@@ -670,10 +777,44 @@ class database
         return $result;
     }
 
+    function isStudent($id){
+        $sql = 'SELECT email FROM users WHERE id = ?';
+        $result = [];
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->bindParam(1, $id);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            foreach($stmt->fetchAll() as $k => $v) {
+                $result = ["email" => $v["email"]];
+            }
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $this->isStudentLogin($result["email"]);
+
+    }
+
     private function isStudentLogin($email){
         return !$this->isParentLogin($email); //if not parent, then must be student
     }
 
+    function getStudentGrade($id){
+        $sql = 'SELECT grade, student_id FROM students WHERE student_id = ?';
+        $result = [];
+        try{
+            $stmt =  $this->con->prepare($sql);
+            $stmt->bindParam(1, $id);
+            $stmt->execute();
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            foreach($stmt->fetchAll() as $k => $v) {
+                $result = ["grade" => $v["grade"], "studentId" => $v["student_id"]];
+            }
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+        return $result;
+    }
 
 
     function __destruct()

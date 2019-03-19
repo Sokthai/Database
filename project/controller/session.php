@@ -13,10 +13,10 @@ $db->connection();
 
 
 
-$allSession = $db->getAllSession();
+$allSession = $db->getAssignableSession(["moid" => $_GET["moid"], "maid" => $_GET["maid"]]);
 
 if (count($allSession) > 0){
-    header("location:../view/session.php?moid= " . $_GET["moid"] . "&&maid=" . $_GET["materialId"] . "&&info=" . base64_encode(serialize($allSession)));
+    header("location:../view/session.php?moid= " . $_GET["moid"] . "&&maid=" . $_GET["maid"] . "&&info=" . base64_encode(serialize($allSession)));
 }else{
-    echo "You do not have any posted material";
+    echo "You do not have any posted material or this material has been assigned to all of your sessions";
 }

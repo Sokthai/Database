@@ -1,0 +1,40 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Allen
+ * Date: 3/19/2019
+ * Time: 8:24 AM
+ */
+
+require("../model/database.php");
+$db = new database("root", "");
+$db->connection();
+
+
+
+
+if (isset($_GET["mentee"])){
+    $course = $db->getMenteeSection($_GET["mentee"]);
+    $mentee = $db->getStudentGrade($_GET["mentee"]);
+    header("location:../view/role.php?mentee=" . base64_encode(serialize($mentee)) ."&&info=" . base64_encode(serialize($course)));
+}elseif (isset($_GET["mentor"])){
+    $course = $db->getMentorSection($_GET["mentor"]);
+    $mentor = $db->getStudentGrade($_GET["mentor"]);
+    header("location:../view/role.php?mentor=" . base64_encode(serialize($mentor)) ."&&info=" . base64_encode(serialize($course)));
+}elseif (isset($_GET["enrollment"])){
+    $menteeCourse = ["mentee" => $db->getMenteeSection($_GET["enrollment"])];
+    $mentorCourse = ["mentor" => $db->getMentorSection($_GET["enrollment"])];
+
+    $enrollment = $db->getStudentGrade($_GET["enrollment"]);
+    header("location:../view/role.php?enrollment=" . base64_encode(serialize($enrollment)) ."&&info=" . base64_encode(serialize(array_merge($menteeCourse, $mentorCourse))));
+
+//    echo "<pre>";
+//    print_r(array_merge($menteeCourse, $mentorCourse));
+//    echo "</pre>";
+}
+
+
+
+//echo "<pre>";
+//    print_r($db->getMenteeSection($_GET["mentee"]));
+//echo "</pre>";

@@ -7,7 +7,11 @@
 <body>
 
 <table border="2px solid ">
-    <?php echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
+    <?php
+        echo "<pre>";
+        print_r(unserialize(base64_decode($_GET["info"])));
+        echo "</pre>";
+    ?>
     <tr>
         <th colspan="7">Assign Material to Session</th>
     </tr>
@@ -22,6 +26,8 @@
         <td>Assignment</td>
     </tr>
     <?php
+    echo "f" . count(unserialize(base64_decode($_GET["info"])));
+
     foreach(unserialize(base64_decode($_GET["info"])) as $value){
         echo "<tr>";
         echo "<td>" . $value["materialId"] . "</td>";
@@ -31,9 +37,8 @@
         echo "<td>" . $value["url"] . "</td>";
         echo "<td>" . $value["assignDate"] . "</td>";
         echo "<td>" . $value["notes"] . "</td>";
-        echo "<td><a href='../controller/session.php?moid=" . $_GET["moid"] . "&&maid=" . $value["materialId"] . ">Assign</a></td>"  ;
-//        header("location:../view/moderating.php?moid=" .$_GET["moid"] . "&&info=" . base64_encode(serialize($db->getAddableSection($_GET["moid"]))));
-
+        //echo "<td><a href='../controller/session.php?moid=" . $_GET["moid"] . "&&maid=" . $value["materialId"] . ">" . "Assign</a></td>"  ;
+        echo "<td>" . "<a href='../controller/session.php?moid=" . $_GET["moid"] . "&&maid=" . $value["materialId"] ."'>Assign</a></td>";
         echo "</tr>";
     }
     ?>

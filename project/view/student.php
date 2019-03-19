@@ -31,7 +31,7 @@
             </tr>
             <tr>
                 <td>Parent</td>
-                <td><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["parent"][0]);?></td>
+                <td><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["parent"][0]["name"]);?></td>
             </tr>
             <tr>
                 <td>Role</td>
