@@ -7,7 +7,7 @@
 <body>
 <form method="post" action="../controller/update.php">
     <table border="2px solid ">
-        <?php echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
+        <?php //echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
         <tr><td colspan="2"><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["role"]);?></td> </tr>
         <tr>
             <td><label for="name">Name:</label></td>

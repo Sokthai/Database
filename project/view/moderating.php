@@ -8,7 +8,7 @@
 
 <form method="post" action="../controller/moderate.php">
     <table border="2px solid ">
-        <?php echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
+        <?php //echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
         <tr>
             <th colspan="10">Moderating</th>
         </tr>

@@ -7,7 +7,7 @@
 <body>
 
         <table border="2px solid ">
-            <?php echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
+            <?php //echo print_r(unserialize(base64_decode($_GET["info"]))); ?>
             <tr><td colspan="2"><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["role"]);?></td> </tr>
             <tr>
                 <td>Name:</td>
@@ -50,7 +50,8 @@
                 </td>
             </tr>
         </table>
-        <a href="../controller/edit.php?id=<?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["id"]);?>">Edit</a>
+
+        <a href="../controller/edit.php?student=1&&id=<?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["id"]);?>">Edit</a>
 
 </body>
 </html>

@@ -16,10 +16,15 @@ $db->connection();
 //echo "</pre>";
 
 
-$assignedSession = $db->getAssignedSession($_GET["moid"]);
-if (count($assignedSession) > 0){
-   header("location:../view/viewAssignSession.php?info=" . base64_encode(serialize($assignedSession)));
-}else{
-    echo "<b>You do not have any assigned session</b>";
+if (isset($_GET["id"])){ //if student want to view all assign material
+    $assignedMaterial = $db->getAllAssignMaterial($_GET["id"]);
+    header("location:../view/assignMaterial.php?info=" . base64_encode(serialize($assignedMaterial)));
+}else { //if parent want to view all the material session they assigned
+    $assignedSession = $db->getAssignedSession($_GET["moid"]);
+    if (count($assignedSession) > 0) {
+        header("location:../view/viewAssignSession.php?info=" . base64_encode(serialize($assignedSession)));
+    } else {
+        echo "<b>You do not have any assigned session</b>";
+    }
 }
 

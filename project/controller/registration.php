@@ -47,10 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                 ];
                 if ($db->registration($info)) {
                     echo "new parent record is added successfully";
-                    echo $_SERVER['HTTP_REFERER'];
+//                    echo $_SERVER['HTTP_REFERER'];
                 } else {
                     echo "cannot add new record now";
-                    echo $_SERVER['HTTP_REFERER'];
+//                    echo $_SERVER['HTTP_REFERER'];
                 }
 
             }else{ //IF STUDENT REGISTER
@@ -65,23 +65,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST"){
                     ];
                     if ($db->registration($info)) {
                         echo "new student record is added successfully";
-                        echo $_SERVER['HTTP_REFERER'];
+//                        echo $_SERVER['HTTP_REFERER'];
                     } else {
                         echo "cannot add new record now";
-                        echo $_SERVER['HTTP_REFERER'];
+//                        echo $_SERVER['HTTP_REFERER'];
                     }
                 }else{
                     echo "sorry, Parent email is not valid";
                 }
-
-
             }
-
-
-
         }
     }else{
-        echo "        ---->the email is already exist";
+        echo  $email . " is already exist";
     }
 
 }else{

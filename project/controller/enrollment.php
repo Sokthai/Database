@@ -30,17 +30,30 @@ $db->connection();
 
 
 if (isset($_POST["mentorEnrollment"])){
+
     if ($db->sectionEnrollment("teach", $_POST["mentor"], $_POST["mentorEnrollment"])){
-        echo "added";
+        echo "mentor schedule added";
     }else{
-        echo "cannot add";
+        echo "cannot add mentor schedule";
     }
 }elseif (isset($_POST["menteeEnrollment"])){
     if ($db->sectionEnrollment("enroll", $_POST["mentee"], $_POST["menteeEnrollment"])){
-        echo "added";
+        echo "mentee schedule added ";
     }else{
-        echo "cannot add";
+        echo "cannot add mentee schedule";
+    }
+}elseif (isset($_GET["menteeDeletion"])) {
+    if ($db->deleteMenteeSchedule($_GET["menteeDeletion"], $_GET["secId"])){
+        echo "mentee schedule deleted";
+    }else{
+        echo "cannot delete mentee schedule";
+    }
+}elseif (isset($_GET["mentorDeletion"])) {
+    if ($db->deleteMentorSchedule( $_GET["mentorDeletion"], $_GET["secId"])){
+        echo "mentor schedule deleted";
+    }else{
+        echo "cannot delete mentor schedule";
     }
 }else{
-    echo "Please select section you want to enroll";
+    echo "Please select section you want to enroll or delete ";
 }

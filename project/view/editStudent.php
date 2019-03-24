@@ -8,7 +8,7 @@
 <form method="post" action="../controller/update.php">
     <table border="2px solid ">
 
-        <?php echo "<pre>"; echo print_r(unserialize(base64_decode($_GET["info"]))); echo "</pre>";?>
+        <?php //echo "<pre>"; echo print_r(unserialize(base64_decode($_GET["info"]))); echo "</pre>";?>
         <tr><td colspan="2"><?php echo strtoupper(unserialize(base64_decode($_GET["info"]))["role"]);?></td> </tr>
         <tr>
             <td><label for="name">Name:</label></td>
@@ -46,7 +46,9 @@
         <?php
                 $info = unserialize(base64_decode($_GET["info"]));
                 if (isset($_GET["student"])){ //if student themselves want to edit their own profile
-                    echo '<label for="role"><b>Role</b></label>';
+                    echo "<tr>";
+                    echo '<td><label for="role"><b>Role</b></label></td>';
+                    echo "<td>";
                     echo '<select name="status" required>';
 
                     if ($info["mentor"] == 1 && $info["mentee"] == 1){
@@ -63,8 +65,11 @@
                         echo '<option value="2" >Both</option> ';
                     }
                     echo '</select>';
+                    echo "</td>";
+                    echo "</tr>";
                 }
             ?>
+
 
 
     </table>

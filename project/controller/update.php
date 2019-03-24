@@ -55,21 +55,25 @@ if ($user == "student"){
 
 if ($user == "student"){
     if (!$db->updateStudent($info)){
-        echo "sorry, something when wrong in the database";
+        echo "sorry, something went wrong in the database of updateStudent";
     }else{
         echo "updated student";
-        echo "<pre>";
-        print_r($info);
-        echo "</pre>";
+//        echo "<pre>";
+//        print_r($info);
+//        echo "</pre>";
+//        header("location:../view/panel.php?mentee=" . base64_encode(serialize($mentee)) . "&&info=" . base64_encode(serialize($course)));
+
     }
-}else{
+}else{ //if parent
     if (!$db->updateParent($info)){
-        echo "sorry, something when wrong in the database";
+        echo "sorry, something when wrong in the database of updateParent";
     }else{
         echo "updated parent";
-        echo "<pre>";
-        print_r($info);
-        echo "</pre>";
+//        echo "<pre>";
+//        print_r($info);
+//        echo "</pre>";
+//        header("location:../view/panel.php?mentor=" . base64_encode(serialize($mentor)) . "&&info=" . base64_encode(serialize($course)));
+
     }
 }
 

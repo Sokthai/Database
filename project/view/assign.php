@@ -8,9 +8,9 @@
 
 <table border="2px solid ">
     <?php
-        echo "<pre>";
-        print_r(unserialize(base64_decode($_GET["info"])));
-        echo "</pre>";
+//        echo "<pre>";
+//        print_r(unserialize(base64_decode($_GET["info"])));
+//        echo "</pre>";
     ?>
     <tr>
         <th colspan="7">Assign Material to Session</th>

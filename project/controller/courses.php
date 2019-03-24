@@ -37,7 +37,6 @@ if (isset($_GET["mentee"])){
         $course = $db->getAddableMentorSection($_GET["mentor"]);
         if (count($course) > 0) {
             $mentor = $db->getStudentGrade($_GET["mentor"]);
-            echo "in";
             header("location:../view/courses.php?mentor=" . base64_encode(serialize($mentor)) ."&&info=" . base64_encode(serialize($course)));
         } else {
             echo "<b>There is no course available at this time mentor</b>";
@@ -48,7 +47,11 @@ if (isset($_GET["mentee"])){
 }else{
         $course = $db->getAllSection();
         if (count($course) > 0){
-            header("location:../view/courses.php?info=" . base64_encode(serialize($course)));
+            if(isset($_GET["moid"])){
+                header("location:../view/courses.php?moid='" . $_GET["moid"]. "'&&info=" . base64_encode(serialize($course)));
+            }else {
+                header("location:../view/courses.php?info=" . base64_encode(serialize($course)));
+            }
         }else{
             echo "<b>There is no course available at this time all</b>";
         }

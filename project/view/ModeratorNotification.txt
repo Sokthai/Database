@@ -1,0 +1,15 @@
+Name: CANNON STUDENT    email: CANNON@GMAIL.COM      SessionId: 1      Session Name: class 101      is cancelled due to mentor is less then 2
+Name: student d    email: d@gmail.com      SessionId: 2      Session Name: data structure afternoon class     is cancelled due to mentor is less then 2
+Name: CANNON STUDENT    email: CANNON@GMAIL.COM      SessionId: 2      Session Name: data structure afternoon class     is cancelled due to mentor is less then 2
+Name: k student    email: k@gmail.com      SessionId: 2      Session Name: data structure afternoon class     is cancelled due to mentor is less then 2
+Name: X STUDENT    email: X@GMAIL.COM      SessionId: 2      Session Name: data structure afternoon class     is cancelled due to mentor is less then 2
+Name: student d    email: d@gmail.com      SessionId: 3      Session Name: DataStrucure morning class     is cancelled due to mentor is less then 2
+Name: CANNON STUDENT    email: CANNON@GMAIL.COM      SessionId: 3      Session Name: DataStrucure morning class     is cancelled due to mentor is less then 2
+Name: k student    email: k@gmail.com      SessionId: 3      Session Name: DataStrucure morning class     is cancelled due to mentor is less then 2
+Name: CANNON STUDENT    email: CANNON@GMAIL.COM      SessionId: 6      Session Name: weekends     is cancelled due to mentor is less then 2
+Name: R STUDENT    email: R@GMAIL.COM      SessionId: 6      Session Name: weekends     is cancelled due to mentor is less then 2
+Name: t student    email: t@gmail.com      SessionId: 6      Session Name: weekends     is cancelled due to mentor is less then 2
+Name: k student    email: k@gmail.com      SessionId: 6      Session Name: weekends     is cancelled due to mentor is less then 2
+Name: X STUDENT    email: X@GMAIL.COM      SessionId: 6      Session Name: weekends     is cancelled due to mentor is less then 2
+Name: sd student    email: sd@gmail.com      SessionId: 6      Session Name: weekends     is cancelled due to mentor is less then 2
+Name: CANNON STUDENT    email: CANNON@GMAIL.COM      SessionId: 7      Session Name: night class     is cancelled due to mentor is less then 2

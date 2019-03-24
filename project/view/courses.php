@@ -9,11 +9,22 @@
     <table border="2px solid ">
         <?php
         echo "<pre>";
-        //print_r(unserialize(base64_decode($_GET["info"])));
+//        print_r(unserialize(base64_decode($_GET["info"])));
         echo "</pre>";
         ?>
         <tr>
-            <th colspan="14">All Courses</th>
+            <th colspan="14">
+                <?php
+                if (isset($_GET["mentee"])){
+                    echo "Mentee Enrollment";
+
+                }elseif (isset($_GET["mentor"])){
+                    echo "Mentor Enrollment";
+                }else{
+                    echo "All Courses";
+                }
+                ?>
+            </th>
         </tr>
         <tr>
             <td>Section ID</td>
@@ -29,10 +40,13 @@
             <td>description</td>
             <td>menteeGradeReq</td>
             <td>mentorGradeReq</td>
+
             <?php
                 if (isset($_GET["mentee"]) || isset($_GET["mentor"])){
                     echo "<td>Enroll</td>";
-
+                }
+                if (isset($_GET["moid"])){
+                    echo "<td>Moderator</td>";
                 }
             ?>
 
@@ -55,10 +69,17 @@
             echo "<td>" . $value["menteeGradeReq"] . "</td>";
             echo "<td>" . $value["mentorGradeReq"] . "</td>";
 
+
+            if (isset($_GET["moid"])){
+                echo "<td><a href=../controller/moderate.php?view='" . $value["secId"] ."'>View</a></td>";
+            }
+
             if (isset($_GET["mentee"])){
                 $mentee = unserialize(base64_decode($_GET["mentee"]));
                 if ($mentee["grade"] >= $value["menteeGradeReq"]){
                     echo "<td><input type='checkbox' name='menteeEnrollment[]' value='" . $value["secId"] . "'>Mentee</td>";
+                }else{
+                    echo "<td>Your Grade(". $mentee["grade"] . ") less than require grade</td>";
                 }
             }
 
@@ -66,18 +87,25 @@
                 $mentor = unserialize(base64_decode($_GET["mentor"]));
                 if ($mentor["grade"] >= $value["mentorGradeReq"]){
                     echo "<td><input type='checkbox' name='mentorEnrollment[]' value='" . $value["secId"] . "'>Mentor</td>";
+                }else{
+                    echo "<td>Your Grade(". $mentor["grade"] . ") less than require grade</td>";
                 }
             }
          echo "</tr>";
+            echo "<input type='hidden' name='courseId' value='" . $value["cId"] . "'>";
+
         }
+
+
         if (isset($_GET["mentee"])) {
-            echo "<input type='hidden' name='mentee' value='" . unserialize(base64_decode($_GET["mentee"]))["studentId"] . "'>";
+                echo "<input type='hidden' name='mentee' value='" . unserialize(base64_decode($_GET["mentee"]))["studentId"] . "'>";
 
-        }
-        if (isset($_GET["mentor"])) {
-            echo "<input type='hidden' name='mentor' value='" . unserialize(base64_decode($_GET["mentor"]))["studentId"] . "'>";
+            }
+            if (isset($_GET["mentor"])) {
+                echo "<input type='hidden' name='mentor' value='" . unserialize(base64_decode($_GET["mentor"]))["studentId"] . "'>";
 
-        }        ?>
+            }
+        ?>
     </table>
     <?php
         if (isset($_GET["mentee"]) || isset($_GET["mentor"])){

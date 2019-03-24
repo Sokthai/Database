@@ -1,0 +1,5 @@
+Name: CANNON STUDENT    email: CANNON@GMAIL.COM      SessionId: 1      Session Name: class 101      is cancelled due to participant is less than 3
+Name: student d    email: d@gmail.com      SessionId: 3      Session Name: DataStrucure morning class     is cancelled due to participant is less than 3
+Name: CANNON STUDENT    email: CANNON@GMAIL.COM      SessionId: 3      Session Name: DataStrucure morning class     is cancelled due to participant is less than 3
+Name: k student    email: k@gmail.com      SessionId: 3      Session Name: DataStrucure morning class     is cancelled due to participant is less than 3
+Name: CANNON STUDENT    email: CANNON@GMAIL.COM      SessionId: 7      Session Name: night class     is cancelled due to participant is less than 3

@@ -18,7 +18,7 @@
                 if (isset($_GET["mentee"])){
                     echo "My Mentee Course";
                 }elseif(isset($_GET["mentor"])) {
-                    echo "My mentor Course";
+                    echo "My Mentor Course";
                 }else{
                     echo "My Enrollment Course";
                 }
@@ -43,7 +43,11 @@
                 if (isset($_GET["enrollment"])){
                     echo "<td>Role</td>";
                 }else{
+
                     echo "<td>Remove</td>";
+                    if (isset($_GET["mentor"])){
+                        echo "<td>View Mentor</td>";
+                    }
                 }
             ?>
 
@@ -56,7 +60,15 @@
                     listAll($v, $key);
                 }
             }else{
-                listAll($value, "<a href='#'>Remove</a>");
+                if (isset($_GET["mentee"])){
+                    listAll($value, "menteeDeletion", unserialize(base64_decode($_GET["mentee"]))["studentId"]);
+
+//                    listAll($value, "<a href='../controller/enrollment.php?menteeDeletion='" . unserialize(base64_decode($_GET["mentee"]))["studentId"] . "'>Remove</a>");
+                }elseif(isset($_GET["mentor"])) {
+                    listAll($value, "mentorDeletion", unserialize(base64_decode($_GET["mentor"]))["studentId"]);
+
+//                    listAll($value, "<a href='../controller/enrollment.php?mentorDeletion='" . unserialize(base64_decode($_GET["mentor"]))["studentId"] . "'>Remove</a>");
+                }
             }
         }
 
@@ -72,7 +84,7 @@
 //
 //        }
 
-        function listAll($value, $role){
+        function listAll($value, $role, $id = null){
             echo "<tr>";
             echo "<td>" . $value["secId"] . "</td>";
             echo "<td>" . $value["secName"] . "</td>";
@@ -87,8 +99,14 @@
             echo "<td>" . $value["description"] . "</td>";
             echo "<td>" . $value["menteeGradeReq"] . "</td>";
             echo "<td>" . $value["mentorGradeReq"] . "</td>";
-            echo "<td>$role</td>";
-
+            if ($id == null){
+                echo "<td>" . $role . "</td>";
+            }else {
+                echo "<td><a href='../controller/enrollment.php?secId=" . $value["secId"] . "&&" . $role . "=" . $id . "'>Remove</a></td>";
+                if (isset($_GET["mentor"])){
+                    echo "<td><a href='../controller/mentor.php?secId=" . $value["secId"] ."'>View</a></td>";
+                }
+            }
         }
         ?>
     </table>
