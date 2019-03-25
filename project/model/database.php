@@ -9,7 +9,7 @@
 class database
 {
 
-   private $dbName = "db2ta";
+   private $dbName = "db2";
    private $password = "";
    private $username = "user";
    private $serverName = "localhost";
@@ -317,7 +317,7 @@ class database
     }
 
     function getAddableMenteeSection($mentee){ //NO PAST COURSE . NO TAKEN CLASS, NO TAKING CLASS/DUPLICATE CLASS
-          $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, enroll WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id not in (select sec_id from enroll where enroll.mentee_id = '. $mentee .') and sections.c_id not in (select sections.c_id from sections, records where sections.sec_id = records.sec_id and records.student_id = ?) AND sections.start_date > (select curdate())';
+          $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id not in (select sec_id from enroll where enroll.mentee_id = '. $mentee .') and sections.c_id not in (select sections.c_id from sections, records where sections.sec_id = records.sec_id and records.student_id = ?) AND sections.start_date > (select curdate())';
 //        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, enroll WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id not in (select sec_id from enroll where enroll.mentee_id = ?) ORDER by sections.sec_name ASC';
         return $this->getSection($sql, $mentee);
     }
@@ -328,7 +328,7 @@ class database
     }
 
     function getAddableMentorSection($mentor){
-        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, teach WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id not in (select sec_id from teach where teach.mentor_id = '. $mentor .') and sections.c_id in (select sections.c_id from sections, records where sections.sec_id = records.sec_id and records.student_id = ?)';
+        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id not in (select sec_id from teach where teach.mentor_id = '. $mentor .') and sections.c_id in (select sections.c_id from sections, records where sections.sec_id = records.sec_id and records.student_id = ?)';
         //$sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, teach WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id and sections.sec_id not in (select sec_id from teach where teach.mentor_id = ?) ORDER by sections.sec_name ASC';
         return $this->getSection($sql, $mentor);
     }
@@ -507,7 +507,7 @@ class database
 
 
     function getAddableSection($moid){
-        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses, moderate WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id  and sections.sec_id NOT IN (SELECT moderate.sec_id FROM moderate WHERE moderate.moderator_id = ?) ORDER BY sections.sec_name ASC';
+        $sql = 'SELECT DISTINCT title, description, mentor_grade_req, mentee_grade_req, day_of_the_week, start_time, end_time, sec_name, start_date, end_date, capacity, sections.sec_id, courses.c_id FROM sections, time_slot, courses WHERE sections.time_slot_id = time_slot.time_slot_id and sections.c_id = courses.c_id  and sections.sec_id NOT IN (SELECT moderate.sec_id FROM moderate WHERE moderate.moderator_id = ?) ORDER BY sections.sec_name ASC';
         return $this->getSection($sql, $moid);
     }
 
@@ -1141,11 +1141,11 @@ class database
 //        echo "<pre> my insert value";
 //        print_r($insertValue);
 //        echo "</pre>";
-        $result = [];
+        $result = false;
         try{
             $this->con->beginTransaction(); // also helps speed up your inserts.
             $stmt =  $this->con->prepare($sql);
-            $stmt->execute($insertValue); //insert multiple row with one statement
+            $result = $stmt->execute($insertValue); //insert multiple row with one statement
         }catch(PDOException $e){
             echo $e->getMessage();
         }

@@ -26,7 +26,6 @@
         <td>Assignment</td>
     </tr>
     <?php
-    echo "f" . count(unserialize(base64_decode($_GET["info"])));
 
     foreach(unserialize(base64_decode($_GET["info"])) as $value){
         echo "<tr>";

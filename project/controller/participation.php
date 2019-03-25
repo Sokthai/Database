@@ -15,7 +15,12 @@ $db->connection();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     if (isset($_POST["participate"])){
-        $db->participate($_POST["participate"], $_POST["id"]);
+        if ($db->participate($_POST["participate"], $_POST["id"])){
+            echo "participation is added";
+        }else{
+            echo "something went wrong, cannot add participation right now.";
+        }
+
     }else{
         echo "Please select at lease one session to participate";
     }
