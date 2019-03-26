@@ -20,6 +20,7 @@
             <td>Announcement</td>
             <td># of Mentor</td>
             <td># of Participate Mentee</td>
+            <td>Mentor</td>
 
 
         </tr>
@@ -33,6 +34,8 @@
             echo "<td>" . $value["announcement"] . "</td>";
             echo "<td>" . $value["mentorCount"] . "/3</td>";
             echo "<td>" . $value["participantCount"] . "/6</td>";
+            echo "<td><a href=../controller/mentor.php?viewMentor=" . $value["secId"] .">View</a></td>";
+
             echo "</tr>";
         }
         ?>

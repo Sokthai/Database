@@ -15,9 +15,17 @@ $db->connection();
 //print_r( $db->getAssignedSession($_GET["moid"]));
 //echo "</pre>";
 
+if (isset($_GET["viewMentor"])){
+    echo "<pre>";
+    echo $_GET["viewMentor"];
+    print_r($db->getMentor($_GET["viewMentor"]));
+    echo "</pre>";
+}else{
+    if (isset($_GET["secId"])){ //if student want to view all assign material
+        $mentoring = $db->getMentor($_GET["secId"]);
+        header("location:../view/mentoring.php?info=" . base64_encode(serialize($mentoring)));
+    }
 
-if (isset($_GET["secId"])){ //if student want to view all assign material
-    $mentoring = $db->getMentor($_GET["secId"]);
-    header("location:../view/mentoring.php?info=" . base64_encode(serialize($mentoring)));
 }
+
 
