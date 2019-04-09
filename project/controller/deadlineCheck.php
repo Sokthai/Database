@@ -21,7 +21,7 @@ function check(){
     $menteeNotify = [];
     $moderatorNotify = [];
     foreach ($participationCount as $value) {
-        if (date("l") == "Sunday" && $value["participantCount"] < 3){
+        if (date("l") == "Thursday" && $value["participantCount"] < 3){
 //            echo "cp count " . $value["participantCount"];
 //            echo "session id = " . $value["sesId"] . " ,Session= " . $value["sesName"] . " will be cancelled<br/>";
             $notify = $db->getNotification($value["sesId"]);
@@ -30,7 +30,7 @@ function check(){
             }
         }
 
-        if (date("l") == "Sunday" && $value["mentorCount"] < 2){
+        if (date("l") == "Thursday" && $value["mentorCount"] < 2){
 //            $moderatorNotify = $db->getNotification($value["sesId"]);
 //            echo "session id = " . $value["sesId"] . " ,Session= " . $value["sesName"] . " will be cancelled to moderato----------r<br/>";
             $notify = $db->getNotification($value["sesId"]);
@@ -40,12 +40,6 @@ function check(){
         }
     }
 
-//    echo "<pre>";
-////    echo "mentee";
-////    print_r($menteeNotify);
-////    echo "moderator";
-//    print_r($moderatorNotify);
-//    echo "</pre>";
 
     if (count($menteeNotify) > 0){
         writeToFile("StudentNotification.txt", $menteeNotify, "participant is less than 3");

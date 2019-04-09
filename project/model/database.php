@@ -391,7 +391,7 @@ class database
     }
 
     function getParticipantAndMentor(){
-        $sql = 'select title, ses_name, date, announcement, ses_id from sessions, courses, sections where sections.c_id = courses.c_id and sessions.sec_id = sections.sec_id';
+        $sql = 'select sections.sec_id, title, ses_name, date, announcement, ses_id from sessions, courses, sections where sections.c_id = courses.c_id and sessions.sec_id = sections.sec_id';
         $result = [];
 //        $mergeArray = [];
         try{
@@ -402,6 +402,7 @@ class database
                 $mergeArray = [
                     "title" => $v["title"],
                     "sesName" => $v["ses_name"],
+                    "secId" => $v["sec_id"],
                     "date" => $v["date"],
                     "announcement" => $v["announcement"],
                     "sesId" => $v["ses_id"],
