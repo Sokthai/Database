@@ -243,3 +243,15 @@ CREATE TABLE `users` (
 ) DEFAULT CHARSET=utf8;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+
+-- add this records table 
+
+CREATE TABLE records (
+	student_id int not null,
+    grade int not null,
+    sec_id int not null,
+    foreign key (student_id) REFERENCES students(student_id),
+    FOREIGN key (sec_id) REFERENCES sections(sec_id)
+)
