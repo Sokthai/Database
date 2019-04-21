@@ -29,18 +29,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private EditText editTextUsername, editTextPassword, editTextEmail;
     private Button buttonRegister;
-    private ProgressDialog progressDialog;
+
+    private Button btnLogin , btnParentRegister, btnStudentRegister;
+
+//    private ProgressDialog progressDialog;
     private TextView textViewLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(SharedPrefManager.getInstance(this).isLoggedIn()){
-            finish();
-            startActivity(new Intent(this, ProfileActivity.class));
-            return;
-        }
+//
 
 
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
@@ -49,9 +48,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textViewLogin = (TextView) findViewById(R.id.textViewLogin);
 
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
-        progressDialog = new ProgressDialog(this);
+
+        btnLogin = findViewById(R.id.btnLogin);
+        btnParentRegister = findViewById(R.id.btnParentRegister);
+        btnStudentRegister = findViewById(R.id.btnStudentRegister);
+
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+
+            }
+        });
+
+
+        btnParentRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), ParentRegistrationActivity.class));
+            }
+        });
+
+        btnStudentRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), StudentRegistrationActivity.class));
+            }
+        });
+
+
+
+//        progressDialog = new ProgressDialog(this);
         buttonRegister.setOnClickListener(this);
         textViewLogin.setOnClickListener(this);
+
+
 
     }
     private void registerUser(){
@@ -60,15 +92,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final String password = editTextPassword.getText().toString().trim();
         final String email = editTextEmail.getText().toString().trim();
 
-        progressDialog.setMessage("Registering user...");
-        progressDialog.show();
+//        progressDialog.setMessage("Registering user...");
+//        progressDialog.show();
+        final String url = "http://10.0.0.184:8888/Android/v1/registerUser.php";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                Constants.URL_REGISTER,
-                new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.dismiss();
+//                        progressDialog.dismiss();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
 
@@ -81,10 +112,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.hide();
+//                        progressDialog.hide();
                         Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                     }
-                }){
+                })
+        {
 
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -96,7 +128,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
 
-       RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+       //RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+       Volley.newRequestQueue(this).add(stringRequest);
     }
 
     @Override

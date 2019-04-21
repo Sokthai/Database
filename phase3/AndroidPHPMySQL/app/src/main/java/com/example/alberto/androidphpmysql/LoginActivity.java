@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,54 +22,64 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends AppCompatActivity{
 
     private EditText editTextUsername, editTextPassword;
     private Button buttonLogin;
-    private ProgressDialog progressDialog;
+//    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if(SharedPrefManager.getInstance(this).isLoggedIn()){
-            finish();
-            startActivity(new Intent(this, ProfileActivity.class));
-            return;
-        }
 
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Please wait...");
 
-        buttonLogin.setOnClickListener(this);
+        buttonLogin.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                userLogin();
+            }
+        });
     }
     private void userLogin(){
         final String username = editTextUsername.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
+        final String url = "http://10.0.0.184:8888/Android/project/controller/login.php";
+//        final String url = "http://10.0.0.184:8888/Android/v1/userLogin.php";
 
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.POST,
-                Constants.URL_LOGIN,
-                new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.dismiss();
+//                        progressDialog.dismiss();
                         try {
                             JSONObject obj = new JSONObject(response);
+//
                             if(!obj.getBoolean("error")){
+                                JSONObject objMessage = new JSONObject(obj.getString("message"));
                                 SharedPrefManager.getInstance(getApplicationContext())
                                         .userLogin(
-                                                obj.getInt("id"),
-                                                obj.getString("username"),
-                                                obj.getString("email")
+                                                objMessage.getInt("id"),
+                                                objMessage.getString("name"),
+                                                objMessage.getString("email"),
+                                                objMessage.getString("phone"),
+                                                objMessage.getString("city"),
+                                                objMessage.getString("state"),
+                                                objMessage.getBoolean("mentee"),
+                                                objMessage.getBoolean("mentor"),
+                                                objMessage.getString("parent"),
+                                                objMessage.getString("role")
                                         );
-                                startActivity(new Intent(getApplicationContext(),ProfileActivity.class));
+//                                Intent startIntent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                                startActivity(new Intent(getApplicationContext(),WelcomeActivity.class));
                                 finish();
+//                                startActivity(startIntent);
+//                                finish();
+
                             }else{
                                 Toast.makeText(
                                         getApplicationContext(),
@@ -76,6 +87,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         Toast.LENGTH_LONG
                                 ).show();
                             }
+
+                            Toast.makeText(getApplicationContext(), "Error : " + obj, Toast.LENGTH_LONG).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -84,33 +97,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
+//                        progressDialog.dismiss();
 
-                        Toast.makeText(
-                                getApplicationContext(),
-                                error.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
+                        Toast.makeText(getApplicationContext(), "sorry some error  " + error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
         ){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                  Map<String, String> params = new HashMap<>();
-                 params.put("username", username);
-                 params.put("password", password);
+//                 params.put("username", username);
+//                 params.put("password", password);
+
+                   params.put("email", username);
+                   params.put("password", password);
                  return params;
 
             }
         };
-        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
-    }
+        Volley.newRequestQueue(this).add(stringRequest);
 
-    @Override
-    public void onClick(View view) {
-        if(view == buttonLogin){
-            userLogin();
-        }
 
     }
+
+
 }
